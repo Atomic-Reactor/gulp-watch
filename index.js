@@ -129,10 +129,9 @@ function watch(globs, opts, cb) {
 		}
 
 		// Workaround for early read
-		setTimeout(() => {
-			vinyl.read(filepath, fileOpts).then(file => {
-				write(event, null, file);
-			});
+		setTimeout(async () => {
+			const file = await vinyl.read(filepath, fileOpts);
+			write(event, null, file);
 		}, opts.readDelay);
 	}
 
