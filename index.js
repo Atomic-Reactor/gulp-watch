@@ -1,17 +1,17 @@
 'use strict';
-var assign = require('object-assign');
-var path = require('path');
-var PluginError = require('plugin-error');
-var fancyLog = require('fancy-log');
-var colors = require('ansi-colors');
-var chokidar = require('chokidar');
-var Duplex = require('readable-stream').Duplex;
-var vinyl = require('vinyl-file');
-var File = require('vinyl');
-var anymatch = require('anymatch');
-var pathIsAbsolute = require('path-is-absolute');
-var globParent = require('glob-parent');
-var normalize = require('normalize-path');
+const path = require('path');
+const assign = require('object-assign');
+const PluginError = require('plugin-error');
+const fancyLog = require('fancy-log');
+const colors = require('ansi-colors');
+const chokidar = require('chokidar');
+const {Duplex} = require('readable-stream');
+const vinyl = require('vinyl-file');
+const File = require('vinyl');
+const anymatch = require('anymatch');
+const pathIsAbsolute = require('path-is-absolute');
+const globParent = require('glob-parent');
+const normalize = require('normalize-path');
 
 function normalizeGlobs(globs) {
 	if (!globs) {
@@ -30,7 +30,7 @@ function normalizeGlobs(globs) {
 }
 
 function watch(globs, opts, cb) {
-	var originalGlobs = globs;
+	const originalGlobs = globs;
 	globs = normalizeGlobs(globs);
 
 	if (typeof opts === 'function') {
@@ -45,11 +45,12 @@ function watch(globs, opts, cb) {
 		if (pathIsAbsolute(filepath)) {
 			return path.normalize(filepath);
 		}
+
 		return path.resolve(opts.cwd || process.cwd(), filepath);
 	}
 
 	function resolveGlob(glob) {
-		var mod = '';
+		let mod = '';
 
 		if (glob[0] === '!') {
 			mod = glob[0];
@@ -58,36 +59,38 @@ function watch(globs, opts, cb) {
 
 		return mod + normalize(resolveFilepath(glob));
 	}
+
 	globs = globs.map(resolveGlob);
 
-	var baseForced = Boolean(opts.base);
-	var outputStream = new Duplex({objectMode: true, allowHalfOpen: true});
+	const baseForced = Boolean(opts.base);
+	const outputStream = new Duplex({objectMode: true, allowHalfOpen: true});
 
-	outputStream._write = function _write(file, enc, done) {
+	outputStream._write = function (file, enc, done) {
 		cb(file);
 		this.push(file);
 		done();
 	};
 
-	outputStream._read = function _read() { };
+	outputStream._read = function () { };
 
-	var watcher = chokidar.watch(globs, opts);
+	const watcher = chokidar.watch(globs, opts);
 
-	opts.events.forEach(function (ev) {
+	opts.events.forEach(ev => {
 		watcher.on(ev, processEvent.bind(undefined, ev));
 	});
 
 	['add', 'change', 'unlink', 'addDir', 'unlinkDir', 'error', 'ready', 'raw']
-		.forEach(function (ev) {
+		.forEach(ev => {
 			watcher.on(ev, outputStream.emit.bind(outputStream, ev));
 		});
 
-	outputStream.add = function add(newGlobs) {
+	outputStream.add = function (newGlobs) {
 		newGlobs = normalizeGlobs(newGlobs)
 			.map(resolveGlob);
 		watcher.add(newGlobs);
-		globs.push.apply(globs, newGlobs);
+		globs.push(...newGlobs);
 	};
+
 	outputStream.unwatch = watcher.unwatch.bind(watcher);
 	outputStream.close = function () {
 		watcher.close();
@@ -96,11 +99,11 @@ function watch(globs, opts, cb) {
 
 	function processEvent(event, filepath) {
 		filepath = resolveFilepath(filepath);
-		var fileOpts = assign({}, opts);
+		const fileOpts = assign({}, opts);
 
-		var glob;
-		var currentFilepath = filepath;
-		while (!(glob = globs[anymatch(globs, currentFilepath, true)]) && currentFilepath !== (currentFilepath = path.dirname(currentFilepath))) {} // eslint-disable-line no-empty-blocks/no-empty-blocks
+		let glob;
+		let currentFilepath = filepath;
+		while (!(glob = globs[anymatch(globs, currentFilepath, true)]) && currentFilepath !== (currentFilepath = path.dirname(currentFilepath))) {} // eslint-disable-line no-empty
 
 		if (!glob) {
 			fancyLog.info(
@@ -126,8 +129,8 @@ function watch(globs, opts, cb) {
 		}
 
 		// Workaround for early read
-		setTimeout(function () {
-			vinyl.read(filepath, fileOpts).then(function (file) {
+		setTimeout(() => {
+			vinyl.read(filepath, fileOpts).then(file => {
 				write(event, null, file);
 			});
 		}, opts.readDelay);
@@ -151,7 +154,7 @@ function watch(globs, opts, cb) {
 	function log(event, file) {
 		event = event[event.length - 1] === 'e' ? event + 'd' : event + 'ed';
 
-		var msg = [colors.magenta(file.relative), 'was', event];
+		const msg = [colors.magenta(file.relative), 'was', event];
 
 		if (opts.name) {
 			msg.unshift(colors.cyan(opts.name) + ' saw');

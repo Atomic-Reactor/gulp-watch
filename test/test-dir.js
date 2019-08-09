@@ -1,34 +1,34 @@
 /* global describe, it, afterEach */
 
-var watch = require('..');
-var path = require('path');
-var fs = require('fs');
-var rimraf = require('rimraf');
-var touch = require('./util/touch');
+const path = require('path');
+const fs = require('fs');
+const rimraf = require('rimraf');
+const touch = require('./util/touch');
+const watch = require('..');
 require('should');
 
 function fixtures(glob) {
 	return path.join(__dirname, 'fixtures', glob);
 }
 
-describe('dir', function () {
-	var w;
+describe('dir', () => {
+	let w;
 
-	afterEach(function (done) {
-		w.on('end', function () {
+	afterEach(done => {
+		w.on('end', () => {
 			rimraf.sync(fixtures('newDir'));
 			done();
 		});
 		w.close();
 	});
 
-	it('should watch files inside directory', function (done) {
+	it('should watch files inside directory', done => {
 		fs.mkdirSync(fixtures('newDir'));
 		touch(fixtures('newDir/index.js'))();
-		w = watch(fixtures('newDir'), function (file) {
+		w = watch(fixtures('newDir'), file => {
 			file.relative.should.eql(path.normalize('newDir/index.js'));
 			done();
-		}).on('ready', function () {
+		}).on('ready', () => {
 			touch(fixtures('newDir/index.js'))('new content');
 		});
 	});
