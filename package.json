@@ -52,7 +52,10 @@
     "vinyl": "^2.2.0",
     "vinyl-file": "^3.0.0"
   },
-  "engine": "node >= 0.10",
+  "engines": {
+      "node": "10.16.0",
+      "npm": ">=6.9.0"
+  },
   "xo": {
     "ignores": ["test"]
   }
