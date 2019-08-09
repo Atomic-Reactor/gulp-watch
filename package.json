@@ -1,7 +1,7 @@
 {
-  "name": "gulp-watch",
-  "version": "5.0.1",
-  "description": "Watch, that actually is an endless stream",
+  "name": "@atomic-reactor/gulp-watch",
+  "version": "5.0.1-patched",
+  "description": "Fork of gulp-watch.",
   "main": "index.js",
   "keywords": [
     "gulp",
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/floatdrop/gulp-watch.git"
+    "url": "git://github.com/Atomic-Reactor/gulp-watch.git"
   },
   "author": "Vsevolod Strukchinsky",
   "license": "MIT",
