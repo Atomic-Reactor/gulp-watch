@@ -1,6 +1,6 @@
 {
   "name": "@atomic-reactor/gulp-watch",
-  "version": "5.0.1-patched",
+  "version": "5.0.2",
   "description": "Fork of gulp-watch.",
   "main": "index.js",
   "keywords": [
@@ -9,7 +9,7 @@
     "gulpplugin"
   ],
   "scripts": {
-    "test": "xo && mocha -r test/util/set-default-options --bail --exit -t 10000 -R spec test/test-*",
+    "test": "mocha -r test/util/set-default-options --bail --exit -t 10000 -R spec test/test-*",
     "coverage": "istanbul cover node_modules/.bin/_mocha --report html -- -r test/util/set-default-options -R spec",
     "coveralls": "istanbul cover _mocha --report lcovonly -- -r test/util/set-default-options -R spec && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
@@ -35,8 +35,7 @@
     "should": "~7",
     "sinon": "^7.4.1",
     "stream-assert": "^2.0.3",
-    "strip-ansi": "^5.2.0",
-    "xo": "^0.24.0"
+    "strip-ansi": "^5.2.0"
   },
   "dependencies": {
     "ansi-colors": "4.1.1",
@@ -53,10 +52,12 @@
     "vinyl-file": "^3.0.0"
   },
   "engines": {
-      "node": "10.16.0",
-      "npm": ">=6.9.0"
+    "node": ">=10.16.0",
+    "npm": ">=6.9.0"
   },
   "xo": {
-    "ignores": ["test"]
+    "ignores": [
+      "test"
+    ]
   }
 }
